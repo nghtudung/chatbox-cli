@@ -21,6 +21,10 @@ io.on('connection', (socket) => {
     io.emit('chat-message', { user: socket.username, message: msg });
   });
 
+  socket.on('leave', name => {
+        socket.broadcast.emit('user-left', `${name} đã rời khỏi phòng chat.`);
+        console.log(`[LOG] Người dùng: ${name} vừa rời`);
+    });
 
   socket.on('disconnect', () => {
     if (socket.username)
