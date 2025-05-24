@@ -32,6 +32,6 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(PORT, () => {
+http.listen(PORT, '0.0.0.0', () => {
   console.log(`🔥 Server chạy tại http://localhost:${PORT}`);
 });
