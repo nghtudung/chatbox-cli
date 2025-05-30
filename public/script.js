@@ -9,8 +9,8 @@ const sendCodeBtn = document.getElementById('send-code');
 
 let currentUser = null;
 
-messageInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
+messageInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
         if (e.shiftKey) {
             e.preventDefault();
             sendCodeBtn.click();
@@ -50,30 +50,34 @@ sendBtn.onclick = () => {
 sendCodeBtn.onclick = () => {
     const msg = messageInput.value;
     if (msg.trim() !== '') {
-        socket.emit('chat-message', "```" + msg + "```");
+        socket.emit('chat-message', '```' + msg + '```');
         messageInput.value = '';
     }
 };
 
 function handleCommand(cmd) {
     const command = cmd.slice(1).toLowerCase();
-    if (command === "help") {
-        addSystemMessage("Available commands:");
-        addSystemMessage("/help - Show this help message");
-        addSystemMessage("/clear - Clear the chat box");
-        addSystemMessage("/about - About this chat");
-        addSystemMessage("/show - Show online users");
-        addSystemMessage("/whisper arg1 arg2 - Send private message to someone");
-    } else if (command === "clear") {
+    if (command === 'help') {
+        addSystemMessage('Available commands:');
+        addSystemMessage('/help - Show this help message');
+        addSystemMessage('/clear - Clear the chat box');
+        addSystemMessage('/about - About this chat');
+        addSystemMessage('/show - Show online users');
+        addSystemMessage(
+            '/whisper arg1 arg2 - Send private message to someone'
+        );
+    } else if (command === 'clear') {
         chat.innerHTML = '';
-    } else if (command === "about") {
-        addSystemMessage("Chat Box vX.X, hẹ hẹ hẹ, from GieJack™ with love <3");
-    } else if (command === "show") {
+    } else if (command === 'about') {
+        addSystemMessage(
+            'Chat Box v1.0.0, hẹ hẹ hẹ, from GieJack™ with love <3'
+        );
+    } else if (command === 'show') {
         socket.emit('show');
-    } else if (command.startsWith("whisper ")) {
+    } else if (command.startsWith('whisper ')) {
         const parts = cmd.split(' ');
         if (parts.length < 3) {
-            addSystemMessage("❌ Usage: /whisper <username> <message>");
+            addSystemMessage('❌ Usage: /whisper <username> <message>');
             return;
         }
         const toUser = parts[1];
@@ -85,29 +89,29 @@ function handleCommand(cmd) {
     }
 }
 
-socket.on('chat-message', data => {
-    const label = data.user === currentUser ? 'Bạn' : data.user;
+socket.on('chat-message', (data) => {
+    const label = data.user === currentUser ? 'You' : data.user;
     addMessage(label, data.message);
 });
 
-socket.on('user-joined', msg => {
+socket.on('user-joined', (msg) => {
     addSystemMessage(msg);
 });
 
-socket.on('user-left', msg => {
+socket.on('user-left', (msg) => {
     addSystemMessage(msg);
 });
 
-socket.on('whisper', data => {
+socket.on('whisper', (data) => {
     addSystemMessage(`(whisper from ${data.from}): ${data.message}`);
 });
 
-socket.on('whisper-error', msg => {
+socket.on('whisper-error', (msg) => {
     addSystemMessage(`❌ ${msg}`);
 });
 
 socket.on('system message', (msg) => {
-  addSystemMessage(msg);
+    addSystemMessage(msg);
 });
 
 window.addEventListener('beforeunload', () => {
@@ -120,7 +124,7 @@ function addMessage(user, msg) {
     const div = document.createElement('div');
     div.classList.add('message');
 
-    if (msg.startsWith("```") && msg.endsWith("```")) {
+    if (msg.startsWith('```') && msg.endsWith('```')) {
         const codeContent = msg.slice(3, -3);
         const pre = document.createElement('pre');
         const code = document.createElement('code');
@@ -143,12 +147,15 @@ function addMessage(user, msg) {
         copyBtn.style.cursor = 'pointer';
 
         copyBtn.onclick = () => {
-            navigator.clipboard.writeText(codeContent).then(() => {
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => copyBtn.textContent = 'Copy', 1500);
-            }).catch(() => {
-                alert('Copy failed!');
-            });
+            navigator.clipboard
+                .writeText(codeContent)
+                .then(() => {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => (copyBtn.textContent = 'Copy'), 1500);
+                })
+                .catch(() => {
+                    alert('Copy failed!');
+                });
         };
 
         const wrapper = document.createElement('div');
@@ -184,5 +191,5 @@ function escapeHtml(text) {
         '"': '&quot;',
         "'": '&#039;',
     };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return text.replace(/[&<>"']/g, (m) => map[m]);
 }

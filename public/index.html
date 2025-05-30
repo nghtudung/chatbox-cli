@@ -1,32 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>Chat Box</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="header">
-    <h2>Chat Box</h2>
-    <a href="/help.html">help me</a>
-    <div id="user-input">
-      <input type="text" id="username" placeholder="Enter your name..." />
-      <button id="setname">Set Nickname</button>
-    </div>
-  </div>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Chat Box</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="header">
+            <h2>Chat Box</h2>
+            <a href="/help.html">help me</a>
+            <div id="user-input">
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter your name..."
+                />
+                <button id="setname">Set Nickname</button>
+            </div>
+        </div>
 
-  <div id="chat"></div>
+        <div id="chat"></div>
 
-  <div id="input-area">
-    <textarea id="message" placeholder="What's on your mind?" rows="4" disabled></textarea>
-    <div id="buttons">
-      <button id="send" disabled>Send</button>
-      <button id="send-code" disabled>Send Code</button>
-    </div>
-  </div>
+        <div id="input-area">
+            <textarea
+                id="message"
+                placeholder="What's on your mind?"
+                rows="4"
+                disabled
+            ></textarea>
+            <div id="buttons">
+                <button id="send" disabled>Send</button>
+                <button id="send-code" disabled>Send Code</button>
+            </div>
+        </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
-
-</body>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
