@@ -17,11 +17,38 @@
                 />
                 <button id="setname">Set Nickname</button>
             </div>
+            <button id="toggle-dark" title="Toggle dark mode">🌙</button>
         </div>
 
         <div id="chat"></div>
 
         <div id="input-area">
+            <div id="input-fields">
+                <textarea
+                    id="message"
+                    placeholder="What's on your mind?"
+                    rows="4"
+                    disabled
+                ></textarea>
+                <div
+                    id="image-preview"
+                    style="display: none; margin-top: 8px"
+                ></div>
+            </div>
+            <div id="buttons-row">
+                <button id="send" disabled>Send</button>
+                <button id="send-code" disabled>Send Code</button>
+                <input
+                    type="file"
+                    id="image-input"
+                    accept="image/*"
+                    style="display: none"
+                />
+                <button id="send-image" disabled>Send Image</button>
+            </div>
+        </div>
+
+        <!-- <div id="input-area">
             <textarea
                 id="message"
                 placeholder="What's on your mind?"
@@ -31,8 +58,15 @@
             <div id="buttons">
                 <button id="send" disabled>Send</button>
                 <button id="send-code" disabled>Send Code</button>
+                <input
+                    type="file"
+                    id="image-input"
+                    accept="image/*"
+                    style="display: none"
+                />
+                <button id="send-image" disabled>Send Image</button>
             </div>
-        </div>
+        </div> -->
 
         <script src="/socket.io/socket.io.js"></script>
         <script src="script.js"></script>

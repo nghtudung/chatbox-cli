@@ -3,30 +3,36 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-const PORT = process.env.PORT || 4953;
+const PORT = process.env.PORT || 6262;
 
 app.use(express.static('public'));
 
 const userMap = {}; // username -> socket.id
 
 io.on('connection', (socket) => {
-    console.log('🔌 Một user đã kết nối');
+    console.log('🔌 New user joined');
 
     socket.on('join', (username) => {
         socket.username = username;
         userMap[username] = socket.id;
-        console.log(`[LOG] Người dùng mới: ${username}`);
-        socket.broadcast.emit('user-joined', `${username} đã vào phòng chat`);
+        console.log(`[LOG] New user: ${username}`);
+        socket.broadcast.emit(
+            'user-joined',
+            `${username} has joined the chat.`
+        );
     });
 
     socket.on('chat-message', (msg) => {
-        // Gửi cho tất cả, kể cả người gửi
-        io.emit('chat-message', { user: socket.username, message: msg });
+        io.emit('chat-message', {
+            user: socket.username,
+            message: msg,
+            time: new Date().toISOString(),
+        });
     });
 
     socket.on('leave', (name) => {
-        socket.broadcast.emit('user-left', `${name} đã rời khỏi phòng chat.`);
-        console.log(`[LOG] Người dùng: ${name} vừa rời`);
+        socket.broadcast.emit('user-left', `${name} has left the chat.`);
+        console.log(`[LOG] User: ${name} has left.`);
         delete userMap[name];
     });
 
@@ -47,6 +53,14 @@ io.on('connection', (socket) => {
         );
     });
 
+    socket.on('chat-image', (imageData) => {
+        io.emit('chat-image', {
+            user: socket.username,
+            image: imageData,
+            time: new Date().toISOString(),
+        });
+    });
+
     //   socket.on('disconnect', () => {
     //     if (socket.username)
     //   io.emit('user-left', `${socket.username} đã rời phòng chat`);
@@ -55,5 +69,5 @@ io.on('connection', (socket) => {
 });
 
 http.listen(PORT, '0.0.0.0', () => {
-    console.log(`🔥 Server chạy tại http://localhost:${PORT}`);
+    console.log(`🔥 Server is on http://localhost:${PORT}`);
 });
