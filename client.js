@@ -35,7 +35,7 @@ rl.question('Nhập tên của bạn: ', (username) => {
     rl.prompt();
 
     rl.on('line', (line) => {
-        socket.emit('chat', `${username}: ${line}`);
+        socket.emit('chat-message', `${line}`);
         console.log(chalk.gray(`Bạn: ${line}`));
         rl.prompt();
     });

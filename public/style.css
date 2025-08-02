@@ -256,9 +256,116 @@ code {
     }
 }
 
-.msg-time {
-    float: right;
-    color: #888;
-    font-size: 12px;
-    margin-left: 8px;
+/* --- DARK MODE --- */
+body.dark {
+    background: #181a1b;
+    color: #e0e0e0;
+}
+
+body.dark #chat {
+    background: #23272a;
+    color: #e0e0e0;
+    border-color: #333;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+body.dark #input-area {
+    background: #23272a;
+    border-top: 1px solid #333;
+}
+
+body.dark #message {
+    background: #23272a;
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+body.dark #username {
+    background: #23272a;
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+body.dark #setname,
+body.dark #send,
+body.dark #send-code,
+body.dark #send-image,
+body.dark #send-file {
+    background: #444;
+    color: #fff;
+}
+
+body.dark #setname:hover:not(:disabled),
+body.dark #send:hover:not(:disabled),
+body.dark #send-code:hover:not(:disabled),
+body.dark #send-image:hover:not(:disabled),
+body.dark #send-file:hover:not(:disabled) {
+    background: #007bff;
+}
+
+body.dark pre {
+    background: #23272a;
+    color: #e0e0e0;
+}
+
+body.dark .message {
+    color: #e0e0e0;
+}
+
+body.dark .user {
+    color: #4ea1ff;
+}
+
+body.dark #image-preview img {
+    border: 1px solid #444;
+}
+
+body.dark #header h2 {
+    color: #ffd580;
+    text-shadow: 0 1px 4px #222;
+}
+
+/* Tăng tương phản cho thời gian tin nhắn */
+body.dark .msg-time {
+    color: #b6c2cf !important;
+}
+
+/* Tăng tương phản cho tin nhắn hệ thống */
+body.dark .message[style*="italic"], 
+body.dark .message[style*="font-style: italic"] {
+    color: #ffd580 !important;
+}
+
+/* Tăng tương phản cho placeholder input */
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+    color: #b6c2cf;
+    opacity: 1;
+}
+
+/* Tăng tương phản cho input, textarea border */
+body.dark input,
+body.dark textarea {
+    color: #e0e0e0;
+    border-color: #555;
+    background: #23272a;
+}
+
+/* Nút copy code trong dark mode */
+body.dark pre button,
+body.dark .copy-btn {
+    background: #333;
+    color: #ffd580;
+    border: 1px solid #555;
+}
+
+body.dark pre button:hover,
+body.dark .copy-btn:hover {
+    background: #444;
+    color: #fffbe7;
+}
+
+/* Tăng tương phản cho link file */
+body.dark a {
+    color: #4ea1ff;
 }

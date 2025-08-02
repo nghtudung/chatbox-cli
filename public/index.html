@@ -2,12 +2,15 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Chat Box</title>
+        <!-- <title>Chat box</title> -->
+        <title>Hệ thống nộp bài trực tuyến</title>
+        <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
         <div id="header">
-            <h2>Chat Box</h2>
+            <!-- <h2>Chat Box</h2> -->
+            <h2>skibidi 🚽</h2>
             <a href="/help.html">help me</a>
             <div id="user-input">
                 <input
@@ -45,6 +48,13 @@
                     style="display: none"
                 />
                 <button id="send-image" disabled>Send Image</button>
+                <!-- Add file input and button for sending files -->
+                <input
+                    type="file"
+                    id="file-input"
+                    style="display: none"
+                />
+                <button id="send-file" disabled>Send File</button>
             </div>
         </div>
 
@@ -70,5 +80,6 @@
 
         <script src="/socket.io/socket.io.js"></script>
         <script src="script.js"></script>
+        <script src="emojiMap-loader.js"></script>
     </body>
 </html>

@@ -2,12 +2,19 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const multer = require('multer');
+const path = require('path');
 
-const PORT = process.env.PORT || 6262;
+const PORT = process.env.PORT || 4953;
 
 app.use(express.static('public'));
 
 const userMap = {}; // username -> socket.id
+
+const upload = multer({
+    dest: path.join(__dirname, 'public', 'uploads'),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
 
 io.on('connection', (socket) => {
     console.log('🔌 New user joined');
@@ -53,10 +60,18 @@ io.on('connection', (socket) => {
         );
     });
 
-    socket.on('chat-image', (imageData) => {
+    socket.on('chat-image', (imageUrl) => {
         io.emit('chat-image', {
             user: socket.username,
-            image: imageData,
+            image: imageUrl,
+            time: new Date().toISOString(),
+        });
+    });
+
+    socket.on('chat-file', (fileData) => {
+        io.emit('chat-file', {
+            user: socket.username,
+            ...fileData,
             time: new Date().toISOString(),
         });
     });
@@ -66,6 +81,25 @@ io.on('connection', (socket) => {
     //   io.emit('user-left', `${socket.username} đã rời phòng chat`);
     // delete userMap[socket.id];
     //   });
+});
+
+app.post('/upload-image', upload.single('image'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    // Đổi tên file để giữ lại phần mở rộng
+    const ext = path.extname(req.file.originalname);
+    const newPath = req.file.path + ext;
+    require('fs').renameSync(req.file.path, newPath);
+    const url = `/uploads/${path.basename(newPath)}`;
+    res.json({ url });
+});
+
+app.post('/upload-file', upload.single('file'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const ext = path.extname(req.file.originalname);
+    const newPath = req.file.path + ext;
+    require('fs').renameSync(req.file.path, newPath);
+    const url = `/uploads/${path.basename(newPath)}`;
+    res.json({ url, name: req.file.originalname });
 });
 
 http.listen(PORT, '0.0.0.0', () => {
