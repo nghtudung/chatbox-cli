@@ -256,7 +256,6 @@ code {
     }
 }
 
-/* --- DARK MODE --- */
 body.dark {
     background: #181a1b;
     color: #e0e0e0;
@@ -325,25 +324,21 @@ body.dark #header h2 {
     text-shadow: 0 1px 4px #222;
 }
 
-/* Tăng tương phản cho thời gian tin nhắn */
 body.dark .msg-time {
     color: #b6c2cf !important;
 }
 
-/* Tăng tương phản cho tin nhắn hệ thống */
 body.dark .message[style*="italic"], 
 body.dark .message[style*="font-style: italic"] {
     color: #ffd580 !important;
 }
 
-/* Tăng tương phản cho placeholder input */
 body.dark input::placeholder,
 body.dark textarea::placeholder {
     color: #b6c2cf;
     opacity: 1;
 }
 
-/* Tăng tương phản cho input, textarea border */
 body.dark input,
 body.dark textarea {
     color: #e0e0e0;
@@ -351,7 +346,6 @@ body.dark textarea {
     background: #23272a;
 }
 
-/* Nút copy code trong dark mode */
 body.dark pre button,
 body.dark .copy-btn {
     background: #333;
@@ -365,7 +359,6 @@ body.dark .copy-btn:hover {
     color: #fffbe7;
 }
 
-/* Tăng tương phản cho link file */
 body.dark a {
     color: #4ea1ff;
 }

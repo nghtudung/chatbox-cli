@@ -9,11 +9,11 @@ const PORT = process.env.PORT || 4953;
 
 app.use(express.static('public'));
 
-const userMap = {}; // username -> socket.id
+const userMap = {};
 
 const upload = multer({
     dest: path.join(__dirname, 'public', 'uploads'),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 io.on('connection', (socket) => {
@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('show', () => {
-        const onlineUsers = Object.keys(userMap); // Lấy danh sách tên người dùng
+        const onlineUsers = Object.keys(userMap);
         socket.emit(
             'system message',
             `🧑‍💻 Online users: ${onlineUsers.join(', ') || 'none'}`
@@ -75,17 +75,10 @@ io.on('connection', (socket) => {
             time: new Date().toISOString(),
         });
     });
-
-    //   socket.on('disconnect', () => {
-    //     if (socket.username)
-    //   io.emit('user-left', `${socket.username} đã rời phòng chat`);
-    // delete userMap[socket.id];
-    //   });
 });
 
 app.post('/upload-image', upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    // Đổi tên file để giữ lại phần mở rộng
     const ext = path.extname(req.file.originalname);
     const newPath = req.file.path + ext;
     require('fs').renameSync(req.file.path, newPath);

@@ -3,10 +3,8 @@ const io = require('socket.io-client');
 const chalk = require('chalk');
 const PORT = 4953;
 
-// Kết nối tới server qua IP LAN hoặc localhost
 const socket = io(`http://localhost:${PORT}`);
 
-// Gán màu cho mỗi user
 function getColorForUser(username) {
     const colors = [
         chalk.red,
@@ -22,7 +20,6 @@ function getColorForUser(username) {
     return colors[hash % colors.length];
 }
 
-// Tạo input CMD
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,

@@ -16,7 +16,6 @@ const sendFileBtn = document.getElementById('send-file');
 let currentUser = null;
 let pendingImageData = null;
 
-// Handle Enter/Shift+Enter for sending messages/code
 messageInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         if (e.ctrlKey) {
@@ -26,7 +25,6 @@ messageInput.addEventListener('keydown', function (e) {
             e.preventDefault();
             sendImageBtn.click();
         } else if (e.shiftKey) {
-            // Allow new line (default behavior)
         } else {
             e.preventDefault();
             sendBtn.click();
@@ -34,7 +32,6 @@ messageInput.addEventListener('keydown', function (e) {
     }
 });
 
-// Set nickname and enable controls
 setNameBtn.onclick = () => {
     const name = usernameInput.value.trim();
     if (name !== '') {
@@ -51,7 +48,6 @@ setNameBtn.onclick = () => {
     }
 };
 
-// Send text message
 sendBtn.onclick = () => {
     const msg = messageInput.value.trim();
     if (msg !== '') {
@@ -64,7 +60,6 @@ sendBtn.onclick = () => {
     }
 };
 
-// Send code message
 sendCodeBtn.onclick = () => {
     const msg = messageInput.value;
     if (msg.trim() !== '') {
@@ -73,7 +68,6 @@ sendCodeBtn.onclick = () => {
     }
 };
 
-// Command handler
 function handleCommand(cmd) {
     const command = cmd.slice(1).toLowerCase();
     if (command === 'help') {
@@ -82,15 +76,11 @@ function handleCommand(cmd) {
         addSystemMessage('/clear - Clear the chat box');
         addSystemMessage('/about - About this chat');
         addSystemMessage('/show - Show online users');
-        addSystemMessage(
-            '/whisper arg1 arg2 - Send private message to someone'
-        );
+        addSystemMessage('/whisper arg1 arg2 - Send private message to someone');
     } else if (command === 'clear') {
         chat.innerHTML = '';
     } else if (command === 'about') {
-        addSystemMessage(
-            'Chat Box v1.1.0, hẹ hẹ hẹ, from GieJack™ with love <3'
-        );
+        addSystemMessage('Chat Box v1.1.0, hẹ hẹ hẹ, from GieJack™ with love <3');
     } else if (command === 'show') {
         socket.emit('show');
     } else if (command.startsWith('whisper ')) {
@@ -108,13 +98,11 @@ function handleCommand(cmd) {
     }
 }
 
-// Helper to format time as HH:mm
 function formatTime(isoString) {
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// Socket event handlers
 socket.on('chat-message', (data) => {
     const label = data.user === currentUser ? 'You' : data.user;
     addMessage(label, data.message, data.time);
@@ -145,23 +133,19 @@ socket.on('chat-image', (data) => {
     addImageMessage(label, data.image, data.time);
 });
 
-// Leave event on window close
 window.addEventListener('beforeunload', () => {
     if (currentUser) {
         socket.emit('leave', currentUser);
     }
 });
 
-// Add text/code message to chat
 function addMessage(user, msg, time) {
     const div = document.createElement('div');
     div.classList.add('message');
-
     let timeHtml = '';
     if (time) {
         timeHtml = `<span class="msg-time">${formatTime(time)}</span>`;
     }
-
     if (msg.startsWith('```') && msg.endsWith('```')) {
         const codeContent = msg.slice(3, -3);
         const pre = document.createElement('pre');
@@ -174,7 +158,6 @@ function addMessage(user, msg, time) {
         pre.style.borderRadius = '5px';
         pre.style.whiteSpace = 'pre-wrap';
         pre.style.position = 'relative';
-
         const copyBtn = document.createElement('button');
         copyBtn.textContent = 'Copy';
         copyBtn.style.position = 'absolute';
@@ -183,7 +166,6 @@ function addMessage(user, msg, time) {
         copyBtn.style.padding = '2px 8px';
         copyBtn.style.fontSize = '12px';
         copyBtn.style.cursor = 'pointer';
-
         copyBtn.onclick = () => {
             navigator.clipboard
                 .writeText(codeContent)
@@ -195,34 +177,27 @@ function addMessage(user, msg, time) {
                     alert('Copy failed!');
                 });
         };
-
         const wrapper = document.createElement('div');
         wrapper.style.position = 'relative';
         wrapper.appendChild(pre);
         wrapper.appendChild(copyBtn);
-
         div.innerHTML = `<span class="user">${user}:</span>`;
         div.appendChild(wrapper);
         div.innerHTML += timeHtml;
     } else {
-        // Escape HTML, replace emojis, and preserve new lines
         const safeMsg = replaceEmojis(escapeHtml(msg)).replace(/\n/g, '<br>');
         div.innerHTML = `<span class="user">${user}:</span> ${safeMsg}${timeHtml}`;
     }
-
-    // Style time to the right
     if (time) {
         div.querySelector('.msg-time').style.float = 'right';
         div.querySelector('.msg-time').style.color = '#888';
         div.querySelector('.msg-time').style.fontSize = '12px';
         div.querySelector('.msg-time').style.marginLeft = '8px';
     }
-
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Add system message to chat
 function addSystemMessage(msg) {
     const div = document.createElement('div');
     div.classList.add('message');
@@ -233,21 +208,17 @@ function addSystemMessage(msg) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Escape HTML
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&#039;',
+        "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
-// --- IMAGE PREVIEW AND SEND ---
-
-// Show image preview
 function showImagePreview(dataUrl) {
     pendingImageData = dataUrl;
     imagePreview.innerHTML = `
@@ -258,7 +229,6 @@ function showImagePreview(dataUrl) {
     sendImageBtn.textContent = 'Send Image';
 }
 
-// Remove image preview
 window.removeImagePreview = function () {
     clearImagePreview();
 };
@@ -270,19 +240,8 @@ function clearImagePreview() {
     sendImageBtn.textContent = 'Send Image';
 }
 
-// Send image if preview exists, else open file dialog
-// sendImageBtn.onclick = () => {
-//     if (pendingImageData) {
-//         socket.emit('chat-image', pendingImageData);
-//         clearImagePreview();
-//     } else {
-//         imageInput.click();
-//     }
-// };
-
 sendImageBtn.onclick = () => {
     if (pendingImageData) {
-        // Convert base64 to Blob
         fetch(pendingImageData)
             .then(res => res.blob())
             .then(blob => {
@@ -290,7 +249,7 @@ sendImageBtn.onclick = () => {
                 formData.append('image', blob, 'image.png');
                 return fetch('/upload-image', {
                     method: 'POST',
-                    body: formData,
+                    body: formData
                 });
             })
             .then(res => res.json())
@@ -311,7 +270,6 @@ sendImageBtn.onclick = () => {
     }
 };
 
-// Handle file selection for preview
 imageInput.addEventListener('change', function () {
     if (imageInput.files && imageInput.files[0]) {
         const file = imageInput.files[0];
@@ -326,7 +284,6 @@ imageInput.addEventListener('change', function () {
     }
 });
 
-// Handle paste event for images (preview)
 messageInput.addEventListener('paste', function (e) {
     const items = e.clipboardData.items;
     for (let i = 0; i < items.length; i++) {
@@ -342,28 +299,6 @@ messageInput.addEventListener('paste', function (e) {
     }
 });
 
-// Add image message to chat
-// function addImageMessage(user, imageData, time) {
-//     const div = document.createElement('div');
-//     div.classList.add('message');
-//     let timeHtml = '';
-//     if (time) {
-//         timeHtml = `<span class="msg-time">${formatTime(time)}</span>`;
-//     }
-//     div.innerHTML = `<span class="user">${user}:</span> ${timeHtml}<br/><img src="${imageData}" style="max-width:300px;max-height:300px;border-radius:8px;margin-top:4px;" />`;
-
-//     // Style time to the right
-//     if (time) {
-//         div.querySelector('.msg-time').style.float = 'right';
-//         div.querySelector('.msg-time').style.color = '#888';
-//         div.querySelector('.msg-time').style.fontSize = '12px';
-//         div.querySelector('.msg-time').style.marginLeft = '8px';
-//     }
-
-//     chat.appendChild(div);
-//     chat.scrollTop = chat.scrollHeight;
-// }
-
 function addImageMessage(user, imageUrl, time) {
     const div = document.createElement('div');
     div.classList.add('message');
@@ -372,53 +307,31 @@ function addImageMessage(user, imageUrl, time) {
         timeHtml = `<span class="msg-time">${formatTime(time)}</span>`;
     }
     div.innerHTML = `<span class="user">${user}:</span> ${timeHtml}<br/><img src="${imageUrl}" style="max-width:300px;max-height:300px;border-radius:8px;margin-top:4px;" />`;
-
-    // Style time to the right
     if (time) {
         div.querySelector('.msg-time').style.float = 'right';
         div.querySelector('.msg-time').style.color = '#888';
         div.querySelector('.msg-time').style.fontSize = '12px';
         div.querySelector('.msg-time').style.marginLeft = '8px';
     }
-
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Enable send-file button after nickname set
-setNameBtn.onclick = () => {
-    const name = usernameInput.value.trim();
-    if (name !== '') {
-        socket.emit('join', name);
-        currentUser = name;
-        usernameInput.disabled = true;
-        setNameBtn.disabled = true;
-        messageInput.disabled = false;
-        sendBtn.disabled = false;
-        sendCodeBtn.disabled = false;
-        sendImageBtn.disabled = false;
-        sendFileBtn.disabled = false;
-        messageInput.focus();
-    }
-};
-
-// Send file if selected, else open file dialog
 sendFileBtn.onclick = () => {
     if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const formData = new FormData();
         formData.append('file', file, file.name);
-
         fetch('/upload-file', {
             method: 'POST',
-            body: formData,
+            body: formData
         })
             .then(res => res.json())
             .then(data => {
                 if (data.url) {
                     socket.emit('chat-file', {
                         name: data.name,
-                        url: data.url,
+                        url: data.url
                     });
                 } else {
                     addSystemMessage('❌ File upload failed');
@@ -433,20 +346,17 @@ sendFileBtn.onclick = () => {
     }
 };
 
-// Optional: open file dialog when button is clicked and no file is selected
 fileInput.addEventListener('change', function () {
     if (fileInput.files && fileInput.files[0]) {
         sendFileBtn.click();
     }
 });
 
-// Receive and display file message
 socket.on('chat-file', (data) => {
     const label = data.user === currentUser ? 'You' : data.user;
     addFileMessage(label, data, data.time);
 });
 
-// Add file message to chat
 function addFileMessage(user, fileData, time) {
     const div = document.createElement('div');
     div.classList.add('message');
@@ -454,30 +364,24 @@ function addFileMessage(user, fileData, time) {
     if (time) {
         timeHtml = `<span class="msg-time">${formatTime(time)}</span>`;
     }
-    // Create a download link for the file
     const link = document.createElement('a');
     link.href = fileData.url;
     link.download = fileData.name;
     link.textContent = `📎 ${fileData.name}`;
     link.target = '_blank';
     link.style.wordBreak = 'break-all';
-
     div.innerHTML = `<span class="user">${user}:</span> ${timeHtml}<br/>`;
     div.appendChild(link);
-
-    // Style time to the right
     if (time) {
         div.querySelector('.msg-time').style.float = 'right';
         div.querySelector('.msg-time').style.color = '#888';
         div.querySelector('.msg-time').style.fontSize = '12px';
         div.querySelector('.msg-time').style.marginLeft = '8px';
     }
-
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Toggle dark mode
 toggleDarkBtn.onclick = function () {
     document.body.classList.toggle('dark');
     if (document.body.classList.contains('dark')) {
@@ -489,7 +393,6 @@ toggleDarkBtn.onclick = function () {
     }
 };
 
-// On load, set theme from preference (default to light)
 (function () {
     const theme = localStorage.getItem('theme');
     if (theme === 'dark') {
@@ -501,7 +404,6 @@ toggleDarkBtn.onclick = function () {
     }
 })();
 
-// Map emoji codes to Unicode emojis
 const emojiMap = {
     ':)': '😊',
     ':-)': '😊',
@@ -658,8 +560,6 @@ const emojiMap = {
     ':rain:': '🌧️',
     ':snowman:': '⛄',
     ':skibidi:': '🚽',
-
-    // Country flags (ISO 3166-1 alpha-2 codes, use :US:, :VN:, etc.)
     ':AD:': '🇦🇩', ':AE:': '🇦🇪', ':AF:': '🇦🇫', ':AG:': '🇦🇬', ':AI:': '🇦🇮',
     ':AL:': '🇦🇱', ':AM:': '🇦🇲', ':AO:': '🇦🇴', ':AQ:': '🇦🇶', ':AR:': '🇦🇷',
     ':AS:': '🇦🇸', ':AT:': '🇦🇹', ':AU:': '🇦🇺', ':AW:': '🇦🇼', ':AX:': '🇦🇽',
@@ -710,11 +610,18 @@ const emojiMap = {
     ':VA:': '🇻🇦', ':VC:': '🇻🇨', ':VE:': '🇻🇪', ':VG:': '🇻🇬', ':VI:': '🇻🇮',
     ':VN:': '🇻🇳', ':VU:': '🇻🇺', ':WF:': '🇼🇫', ':WS:': '🇼🇸', ':YE:': '🇾🇪',
     ':YT:': '🇾🇹', ':ZA:': '🇿🇦', ':ZM:': '🇿🇲', ':ZW:': '🇿🇼',
+    ':VNM:': '🇻🇳', ':USA:': '🇺🇸', ':JPN:': '🇯🇵', ':KOR:': '🇰🇷', ':CHN:': '🇨🇳',
+    ':FRA:': '🇫🇷', ':DEU:': '🇩🇪', ':ITA:': '🇮🇹', ':ESP:': '🇪🇸', ':GBR:': '🇬🇧',
+    ':RUS:': '🇷🇺', ':UKR:': '🇺🇦', ':THA:': '🇹🇭', ':SGP:': '🇸🇬', ':PHL:': '🇵🇭',
+    ':IDN:': '🇮🇩', ':MYS:': '🇲🇾', ':LAO:': '🇱🇦', ':KHM:': '🇰🇭', ':CAN:': '🇨🇦',
+    ':AUS:': '🇦🇺', ':BRA:': '🇧🇷', ':IND:': '🇮🇳', ':TUR:': '🇹🇷', ':SAU:': '🇸🇦',
+    ':ARG:': '🇦🇷', ':MEX:': '🇲🇽', ':ZAF:': '🇿🇦', ':EGY:': '🇪🇬', ':NGA:': '🇳🇬',
+    ':PAK:': '🇵🇰', ':POL:': '🇵🇱', ':SWE:': '🇸🇪', ':FIN:': '🇫🇮', ':NOR:': '🇳🇴',
+    ':DNK:': '🇩🇰', ':NLD:': '🇳🇱', ':BEL:': '🇧🇪', ':CHE:': '🇨🇭', ':AUT:': '🇦🇹',
+    ':NZL:': '🇳🇿'
 };
 
-// Replace emoji codes in text with actual emojis
 function replaceEmojis(text) {
-    // Build a regex from all keys, sorted by length (desc) to avoid partial matches
     const keys = Object.keys(emojiMap).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     const regex = new RegExp('(' + keys.join('|') + ')', 'g');
     return text.replace(regex, match => emojiMap[match] || match);
